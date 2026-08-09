@@ -4,7 +4,7 @@
 Analisis risiko default pada 10.000 pinjaman Lending Club melalui 4 dimensi segmentasi menggunakan SQL. Project ini mengombinasikan analisa data dengan perspektif lapangan dari pengalaman sebagai Branch Collection Head di perusahaan multifinance.
 
 ## Background
-Sebagai mantan Branch Collection Head di WOM Finance, saya menangani proses penagihan dan analisa kredit after sales — mulai dari grading konsumen, proses banding (appeal), hingga pengelolaan akun bermasalah. Project ini bertujuan memvalidasi pola-pola risiko kredit yang saya temui di lapangan menggunakan data publik Lending Club.
+Sebagai ex-Branch Collection Head di WOM Finance, saya menangani proses penagihan dan analisa kredit after sales — mulai dari grading konsumen, proses banding (appeal), hingga pengelolaan akun bermasalah. Project ini bertujuan memvalidasi pola-pola risiko kredit yang saya temui di lapangan menggunakan data publik Lending Club.
 
 ## Dataset
 - **Source:** [Lending Club — Kaggle](https://www.kaggle.com/datasets/wordsforthewise/lending-club)
