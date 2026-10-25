@@ -4,32 +4,40 @@
 Analisis risiko default pada 10.000 pinjaman Lending Club melalui 4 dimensi segmentasi menggunakan SQL. Project ini mengombinasikan analisa data dengan perspektif lapangan dari pengalaman sebagai Branch Collection Head di perusahaan multifinance.
 
 ## Background
-Sebagai ex-Branch Collection Head di WOM Finance, saya menangani proses penagihan dan analisa kredit after sales — mulai dari grading konsumen, proses banding (appeal), hingga pengelolaan akun bermasalah. Project ini bertujuan memvalidasi pola-pola risiko kredit yang saya temui di lapangan menggunakan data publik Lending Club.
+Sebagai mantan Branch Collection Head di WOM Finance, saya menangani proses penagihan dan analisa kredit after sales — mulai dari grading konsumen, proses banding (appeal), hingga pengelolaan akun bermasalah. Project ini bertujuan menguji, menggunakan data publik Lending Club, apakah pola-pola risiko kredit yang saya temui di lapangan juga terlihat di data.
 
 ## Dataset
 - **Source:** [Lending Club — Kaggle](https://www.kaggle.com/datasets/wordsforthewise/lending-club)
-- **Sample:** 10.000 loans (kurasi dari 71.454 records)
+- **Sample:** 10.000 loans, random sample (seed 42) dari 71.454 records
 - **Columns:** 9 variabel kunci (grade, purpose, home_ownership, loan_amnt, loan_status, term, int_rate, annual_inc, id)
 - **Default definition:** Charged Off + Late (31-120 days)
+- **Default rate** = jumlah loan default ÷ seluruh loan dalam segmen (semua status loan ikut di penyebut)
 
 ## Business Questions
 
 | BQ | Question | Key Finding |
 |---|---|---|
-| **BQ1** | Default rate per loan grade (A–G)? | Progresif sempurna: A (2.53%) → G (41.03%), **16x lipat** |
-| **BQ2** | Purpose mana yang paling sering default? | Debt consolidation (13.28%) tertinggi — bukan credit card |
-| **BQ3** | Apakah home ownership mempengaruhi default risk? | RENT (14.81%) > OWN (11.35%) > MORTGAGE (9.72%) |
-| **BQ4** | Apakah loan amount besar = default lebih tinggi? | Medium ($10-20k) justru tertinggi (13.57%), bukan Large |
+| **BQ1** | Default rate per loan grade (A–G)? | Naik monoton: A (2.53%) → G (41.03%), sekitar **16x** lipat |
+| **BQ2** | Purpose mana yang paling sering default? | Debt consolidation (13.28%) tertinggi, di atas credit card (9.70%) |
+| **BQ3** | Apakah home ownership mempengaruhi default risk? | RENT (14.81%) lebih tinggi dari OWN (11.35%) dan MORTGAGE (9.72%) |
+| **BQ4** | Apakah loan amount besar = default lebih tinggi? | Small ($10k ke bawah) paling rendah (9.63%); Medium (13.57%) dan Large (12.76%) selisihnya kecil |
 
 ## Key Insights
 
-**1. Grade kredit = prediktor terkuat.** Default rate naik monoton dari A ke G tanpa anomali — sistem grading Lending Club terbukti valid sebagai basis risk pricing.
+**1. Grade kredit adalah pembeda terkuat dalam sampel ini.** Default rate naik monoton dari A ke G tanpa anomali, konsisten dengan fungsi grading sebagai dasar risk pricing. Catatan: grade G hanya berisi 39 loan.
 
-**2. Dua temuan counter-intuitive:**
-- **BQ2:** Debt consolidation lebih berisiko dari credit card — borrower yang refinancing kemungkinan sudah di titik kesulitan finansial lebih dalam ("gali lobang tutup lobang")
-- **BQ4:** Pinjaman menengah ($10-20k) lebih berisiko dari pinjaman besar (>$20k) — kemungkinan karena perbedaan level scrutiny dan kewenangan approval
+**2. Dua temuan yang berbeda dari ekspektasi awal:**
+- **BQ2:** Debt consolidation lebih berisiko dari credit card (selisih 3.6 pp, signifikan secara statistik). *Hipotesis dari pengalaman lapangan (belum diuji di data ini):* borrower yang refinancing kemungkinan sudah berada di titik kesulitan finansial lebih dalam ("gali lobang tutup lobang").
+- **BQ4:** Medium ($10-20k) sedikit di atas Large (>$20k), tapi selisihnya hanya 0.8 pp dan **belum signifikan secara statistik** (z ≈ 0.9). Pola yang jelas hanya Small yang lebih rendah dari dua segmen lainnya. *Hipotesis dari pengalaman lapangan:* perbedaan kewenangan approval di segmen menengah. Mekanisme ini berasal dari pengalaman di WOM dan belum tentu berlaku di Lending Club.
 
-**3. Home ownership sebagai proxy stabilitas finansial** terkonfirmasi — tapi MORTGAGE lebih aman dari OWN, kemungkinan karena borrower KPR sudah lolos underwriting bank yang lebih ketat (DSR screening).
+**3. Home ownership sebagai proxy stabilitas finansial.** RENT lebih tinggi dari OWN (selisih 3.5 pp, signifikan). MORTGAGE sedikit lebih rendah dari OWN, tapi selisih 1.6 pp tergolong lemah (z ≈ 1.7), jadi belum bisa disimpulkan. *Hipotesis untuk diuji:* borrower KPR sudah lolos underwriting bank yang lebih ketat (DSR screening).
+
+## Limitations
+- Sampel adalah random sample 10.000 loan dari file sumber 71.454 loan, yang merupakan potongan data, bukan seluruh dataset Lending Club.
+- Penyebut default rate mencakup seluruh loan, termasuk yang masih berstatus Current (belum selesai berjalan), sehingga rate bisa lebih rendah dari rate akhir.
+- "Default" mencakup Late (31-120 days) yang merupakan kolektibilitas bermasalah, bukan write-off final.
+- Beberapa segmen berukuran kecil (misalnya grade G = 39 loan). Perbandingan antar segmen diuji dengan uji dua proporsi sederhana dari angka agregat, bukan model statistik penuh.
+- Analisis ini deskriptif (korelasi), bukan sebab-akibat.
 
 ## Repo Structure
 
